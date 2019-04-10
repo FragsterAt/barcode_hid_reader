@@ -1,0 +1,24 @@
+{
+  "name": "barcode_hid_reader",
+  "version": "1.0.0",
+  "description": "simple js lib for capturing data from HID barcode scanners",
+  "main": "barcode_hid_reader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FragsterAt/barcode_hid_reader.git"
+  },
+  "keywords": [
+    "barcode",
+    "reader",
+    "hid"
+  ],
+  "author": "Anton Grachev",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/FragsterAt/barcode_hid_reader/issues"
+  },
+  "homepage": "https://github.com/FragsterAt/barcode_hid_reader#readme"
+}
