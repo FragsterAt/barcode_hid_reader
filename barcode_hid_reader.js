@@ -39,6 +39,13 @@ export default (function() {
     reset();
   }
 
+  function log() {
+    if (process.env.NODE_ENV === "development") {
+      // eslint-disable-next-line
+      console.log("barcode hid reader", performance.now(), ...arguments);
+    }
+  }
+
   function dispatchKeyUp(e) {
     if (e.altKey || e.ctrlKey) {
       return;
@@ -51,12 +58,13 @@ export default (function() {
         Object.assign(new KeyboardEvent("keyup", e), { custom: true })
       );
     }
-    if (shortState === CAPTURING && e.key == suffix) {
+    if (shortState === CAPTURING && e.key.toLowerCase() == suffix) {
       timeoutID && clearTimeout(timeoutID);
 
       e.preventDefault();
       e.stopPropagation();
 
+      log("barcode", barcode);
       callback(barcode);
 
       reset();
@@ -64,10 +72,7 @@ export default (function() {
   }
 
   function dispatchKeyDown(e) {
-    if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line
-      console.log(performance.now(), shortState, e);
-    }
+    log(shortState, e);
 
     if (e.custom) {
       return;
@@ -85,7 +90,7 @@ export default (function() {
       return;
     }
 
-    if (shortState === CAPTURING && e.key == suffix) {
+    if (shortState === CAPTURING && e.key.toLowerCase() == suffix) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -121,6 +126,7 @@ export default (function() {
 
   return {
     startCapturing(doc, options) {
+      log("start capturing");
       ({ timeout, prefix, suffix, callback } = Object.assign(
         { timeout: 30, prefix: "", suffix: "Enter", callback: dispatchEvent },
         options
@@ -132,12 +138,16 @@ export default (function() {
       state = CAPTURING;
     },
     stopCapturing() {
-      node.removeEventListener("keydown", this.dispatchKeyDown);
-      node.removeEventListener("keyup", this.dispatchKeyUp);
+      log("stop capturing");
+      node.removeEventListener("keydown", dispatchKeyDown, true);
+      node.removeEventListener("keyup", dispatchKeyUp, true);
       state = IDLE;
     },
     getState() {
+      log("state", state);
       return state;
-    }
+    },
+    CAPTURING: CAPTURING,
+    IDLE: IDLE
   };
 })();
