@@ -40,6 +40,10 @@ export default (function() {
   }
 
   function dispatchKeyUp(e) {
+    if (e.altKey || e.ctrlKey) {
+      return;
+    }
+
     if (shortState === CAPTURING && e.key.length === 1) {
       e.preventDefault();
       e.stopPropagation();
@@ -77,7 +81,7 @@ export default (function() {
       return;
     }
 
-    if (shortState !== CAPTURING && (e.altKey || e.ctrlKey)) {
+    if (e.altKey || e.ctrlKey) {
       return;
     }
 
