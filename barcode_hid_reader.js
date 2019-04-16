@@ -77,6 +77,10 @@ export default (function() {
       return;
     }
 
+    if (shortState !== CAPTURING && (e.altKey || e.ctrlKey)) {
+      return;
+    }
+
     if (shortState === CAPTURING && e.key == suffix) {
       e.preventDefault();
       e.stopPropagation();
