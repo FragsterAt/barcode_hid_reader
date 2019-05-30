@@ -124,11 +124,14 @@ export default (function() {
     }
   }
 
+  let defaults = {timeout: 30, prefix: "", suffix: "Enter", callback: dispatchEvent};
+
   return {
+    defaults,
     startCapturing(doc, options) {
       log("start capturing");
       ({ timeout, prefix, suffix, callback } = Object.assign(
-        { timeout: 30, prefix: "", suffix: "Enter", callback: dispatchEvent },
+        defaults,
         options
       ));
       reset();
