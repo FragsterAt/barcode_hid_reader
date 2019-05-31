@@ -1,4 +1,8 @@
-export default (function() {
+/**
+ * @author Fragster http://fragster.ru
+ */
+
+let barcode_hid_reader = (function() {
   const IDLE = "idle";
   const CAPTURING = "capturing";
   let timeoutID = undefined;
@@ -14,6 +18,7 @@ export default (function() {
   let events = undefined;
   let shortState = undefined;
   let node = undefined;
+  let log = undefined;
 
   function reset() {
     timeoutID = undefined;
@@ -39,14 +44,19 @@ export default (function() {
     reset();
   }
 
-  function log() {
-    if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line
-      console.log("barcode hid reader", performance.now(), ...arguments);
+  function logger() {
+    if (log) {
+      if (typeof log === "function") {
+        log(...arguments);
+      } else {
+        console.log("barcode hid reader", performance.now(), ...arguments);
+      }
     }
   }
 
   function dispatchKeyUp(e) {
+    logger(shortState, e, e.custom);
+
     if (e.altKey || e.ctrlKey) {
       return;
     }
@@ -64,7 +74,7 @@ export default (function() {
       e.preventDefault();
       e.stopPropagation();
 
-      log("barcode", barcode);
+      logger("barcode", barcode);
       callback(barcode);
 
       reset();
@@ -72,7 +82,7 @@ export default (function() {
   }
 
   function dispatchKeyDown(e) {
-    log(shortState, e);
+    logger(shortState, e, e.custom);
 
     if (e.custom) {
       return;
@@ -124,16 +134,23 @@ export default (function() {
     }
   }
 
-  let defaults = {timeout: 30, prefix: "", suffix: "Enter", callback: dispatchEvent};
+  let defaults = {
+    timeout: 30,
+    prefix: "",
+    suffix: "Enter",
+    callback: dispatchEvent,
+    log: false
+  };
 
   return {
     defaults,
     startCapturing(doc, options) {
-      log("start capturing");
-      ({ timeout, prefix, suffix, callback } = Object.assign(
+      logger("start capturing");
+      ({ timeout, prefix, suffix, callback, log } = Object.assign(
         defaults,
         options
       ));
+      suffix = suffix.toLowerCase();
       reset();
       node = doc;
       node.addEventListener("keydown", dispatchKeyDown, true);
@@ -141,16 +158,18 @@ export default (function() {
       state = CAPTURING;
     },
     stopCapturing() {
-      log("stop capturing");
+      logger("stop capturing");
       node.removeEventListener("keydown", dispatchKeyDown, true);
       node.removeEventListener("keyup", dispatchKeyUp, true);
       state = IDLE;
     },
     getState() {
-      log("state", state);
+      logger("state", state);
       return state;
     },
     CAPTURING: CAPTURING,
     IDLE: IDLE
   };
 })();
+
+export default barcode_hid_reader;

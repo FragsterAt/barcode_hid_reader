@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Barcode HID reader</title>
+  </head>
+  <body>
+    <script type="module">
+        import barcode from "./barcode_hid_reader.js";
+
+        function processBarcode(barcode) {
+          let el = document.getElementById('output');
+          el.innerHTML += barcode + "\n";
+        }
+        function log(arguments) {
+          console.log(arguments);
+          let el = document.getElementById('log');
+          el.innerHTML += arguments.reduce((res, elem) => res + res ? "\t" : "" + elem, "") + "\n";
+        }
+
+        barcode.defaults.callback = processBarcode;
+        barcode.defaults.log = log;
+
+        barcode.startCapturing(document);
+        
+        function applySettings(event) {
+          
+          let form = event.target
+
+          barcode.stopCapturing();
+          let options = {
+              prefix: form.prefix.value,
+              suffix: form.suffix.value,
+              timeout: Number.parseInt(form.timeout.value)
+            };
+            console.log(options);
+
+          barcode.startCapturing(document, options);
+          event.preventDefault();
+        }
+
+        document.getElementById('settings').addEventListener("submit", applySettings);
+      </script>
+    <h1>Тест клавиатурного СШК</h1>
+    <h2>Настройки</h2>
+    <form id="settings">
+      <table>
+        <tr>
+          <td>Prefix</td>
+          <td>
+            <input name="prefix" value=""/>
+          </td>
+        </tr>
+        <tr>
+          <td>Suffix</td>
+          <td>
+            <input name="suffix" value="Enter"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Timeout</td>
+          <td>
+            <input name="timeout" value="30"/>
+          </td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">Apply</button></td>
+          </tr>
+        </table>
+    </form>
+    <h2>Результат</h2>
+    <p>Чтобы работало, в качестве активного элемента не должно быть выбрано поле ввода (просто кликните на свободное место страницы)</p>
+    <pre id="output"></pre>
+    <h2>Log</h2>
+    <pre id="log"></pre>
+  </body>
+</html>
