@@ -9,7 +9,11 @@ npm install --save git+https://github.com/FragsterAt/barcode_hid_reader.git
 
 # import
 
+if using bundler:
+
+```
 import barcode from "barcode_hid_reader";
+```
 
 ## start capturing:
 
