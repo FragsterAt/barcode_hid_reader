@@ -1,7 +1,7 @@
 # barcode_hid_reader
 simple js lib for capturing events from HID barcode scanners
 
-#installing via npm:
+## installing via npm:
 
 ```
 npm install --save git+https://github.com/FragsterAt/barcode_hid_reader.git
