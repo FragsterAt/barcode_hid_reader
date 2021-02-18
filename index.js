@@ -173,4 +173,3 @@ const barcodeHidReader = (function () {
 })()
 
 export default barcodeHidReader
-module.exports = barcodeHidReader
