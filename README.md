@@ -4,7 +4,7 @@ simple js lib for capturing events from HID barcode scanners
 ## installing via npm:
 
 ```
-npm install --save git+https://github.com/FragsterAt/barcode_hid_reader.git
+npm i barcode-hid-reader
 ```
 
 # import
@@ -12,7 +12,7 @@ npm install --save git+https://github.com/FragsterAt/barcode_hid_reader.git
 if using bundler:
 
 ```
-import barcode from "barcode_hid_reader";
+import barcode from "barcode-hid-reader";
 ```
 
 ## start capturing:
@@ -43,8 +43,6 @@ barcode.startCapturing(document, {
 barcode.stopCapturing();
 ```
 
-## installing via npm:
 
-npm i barcode-hid-reader
 
 Copyright 2019 Anton Grachev
