@@ -42,3 +42,9 @@ barcode.startCapturing(document, {
 ```
 barcode.stopCapturing();
 ```
+
+## installing via npm:
+
+npm i barcode-hid-reader
+
+Copyright 2019 Anton Grachev

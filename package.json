@@ -1,8 +1,8 @@
 {
-  "name": "barcode_hid_reader",
+  "name": "barcode-hid-reader",
   "version": "1.0.0",
   "description": "simple js lib for capturing data from HID barcode scanners",
-  "main": "barcode_hid_reader.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,9 +16,16 @@
     "hid"
   ],
   "author": "Anton Grachev",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/FragsterAt/barcode_hid_reader/issues"
   },
-  "homepage": "https://github.com/FragsterAt/barcode_hid_reader#readme"
+  "homepage": "https://github.com/FragsterAt/barcode_hid_reader#readme",
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1"
+  }
 }
