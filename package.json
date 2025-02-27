@@ -1,6 +1,6 @@
 {
   "name": "barcode-hid-reader",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "simple js lib for capturing data from HID barcode scanners",
   "main": "index.js",
   "scripts": {

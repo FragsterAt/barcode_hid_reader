@@ -140,7 +140,7 @@ const barcodeHidReader = (function () {
       shortState = CAPTURING
     }
 
-    if (shortState === CAPTURING) {
+    if (shortState === CAPTURING && e.key.length === 1) {
       events.push(
         Object.assign(new KeyboardEvent('keydown', e), { custom: true })
       )
