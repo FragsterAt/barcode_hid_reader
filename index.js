@@ -21,6 +21,31 @@ const barcodeHidReader = (function () {
   let node
   let log
 
+  const latinKeyCodes = {
+    BracketLeft: ['[', '{'],
+    BracketRight: [']', '}'],
+    Semicolon: [';', ':'],
+    Quote: ['\'', '"'],
+    Backslash: ['\\', '|'],
+    Comma: [',', '<'],
+    Period: ['.', '>'],
+    Slash: ['/', '?'],
+    Digit1: ['1', '!'],
+    Digit2: ['2', '@'],
+    Digit3: ['3', '#'],
+    Digit4: ['4', '$'],
+    Digit5: ['5', '%'],
+    Digit6: ['6', '^'],
+    Digit7: ['7', '&'],
+    Digit8: ['8', '*'],
+    Digit9: ['9', '('],
+    Digit0: ['0', ')'],
+    Minus: ['-', '_'],
+    Equal: ['=', '+'],
+    Backquote: ['`', '~'],
+    IntlBackslash: ['\\', '|']
+  }
+
   function reset () {
     timeoutID = undefined
     barcode = ''
@@ -124,8 +149,10 @@ const barcodeHidReader = (function () {
       )
 
       if (e.key !== prefix) {
-        if (convertToLatin && e.code?.startsWith('Key')) {
-          barcode += e.shiftKey ? e.code.charAt(3) : e.code.charAt(3).toLowerCase()
+        if (convertToLatin && (latinKeyCodes[e.code] || e.code?.startsWith('Key'))) {
+          barcode += e.shiftKey
+            ? latinKeyCodes[e.code]?.[1] ?? e.code.charAt(3)
+            : latinKeyCodes[e.code]?.[0] ?? e.code.charAt(3).toLowerCase()
         } else {
           barcode += e.key
         }
