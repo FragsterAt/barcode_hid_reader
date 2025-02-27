@@ -31,6 +31,7 @@
         let options = {
           prefix: form.prefix.value,
           suffix: form.suffix.value,
+          convertToLatin: form.convertToLatin.checked,
           timeout: Number.parseInt(form.timeout.value),
         }
         console.log(options)
@@ -57,6 +58,12 @@
           <td>Suffix</td>
           <td>
             <input name="suffix" value="Enter" />
+          </td>
+        </tr>
+        <tr>
+          <td>Convert to latin</td>
+          <td>
+            <input name="convertToLatin" type="checkbox" checked />
           </td>
         </tr>
         <tr>

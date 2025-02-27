@@ -12,6 +12,7 @@ const barcodeHidReader = (function () {
   let timeout
   let prefix
   let suffix
+  let convertToLatin
   let callback
 
   let barcode
@@ -123,7 +124,11 @@ const barcodeHidReader = (function () {
       )
 
       if (e.key !== prefix) {
-        barcode += e.key
+        if (convertToLatin && e.code?.startsWith('Key')) {
+          barcode += e.shiftKey ? e.code.charAt(3) : e.code.charAt(3).toLowerCase()
+        } else {
+          barcode += e.key
+        }
       }
 
       e.preventDefault()
@@ -138,6 +143,7 @@ const barcodeHidReader = (function () {
     timeout: 30,
     prefix: '',
     suffix: 'Enter',
+    convertToLatin: true,
     callback: dispatchEvent,
     log: false
   }
@@ -146,7 +152,7 @@ const barcodeHidReader = (function () {
     defaults,
     startCapturing (doc, options) {
       logger('start capturing');
-      ({ timeout, prefix, suffix, callback, log } = Object.assign(
+      ({ timeout, prefix, suffix, callback, log, convertToLatin } = Object.assign(
         defaults,
         options
       ))
