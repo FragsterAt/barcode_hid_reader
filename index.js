@@ -21,6 +21,7 @@ const barcodeHidReader = (function () {
   let node
   let log
 
+  const letterCodes = Object.fromEntries('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(c => ['Key' + c, [c.toLowerCase(), c]]))
   const latinKeyCodes = {
     BracketLeft: ['[', '{'],
     BracketRight: [']', '}'],
@@ -43,7 +44,8 @@ const barcodeHidReader = (function () {
     Minus: ['-', '_'],
     Equal: ['=', '+'],
     Backquote: ['`', '~'],
-    IntlBackslash: ['\\', '|']
+    IntlBackslash: ['\\', '|'],
+    ...letterCodes
   }
 
   function reset () {
@@ -64,10 +66,15 @@ const barcodeHidReader = (function () {
   }
 
   function handleTimeout () {
-    events.forEach(el => {
-      el.explicitOriginalTarget.dispatchEvent(el)
-    })
-    reset()
+    if (suffix !== '' || barcode.length < (prefix === '' ? 2 : 1)) {
+      logger('timeout', barcode)
+      events.forEach(el => {
+        el.explicitOriginalTarget.dispatchEvent(el)
+      })
+      reset()
+    } else {
+      completeBarcode()
+    }
   }
 
   function logger () {
@@ -80,6 +87,13 @@ const barcodeHidReader = (function () {
     }
   }
 
+  function completeBarcode () {
+    logger('barcode', barcode)
+    callback(barcode)
+
+    reset()
+  }
+
   function dispatchKeyUp (e) {
     logger(shortState, e, e.custom)
 
@@ -87,23 +101,23 @@ const barcodeHidReader = (function () {
       return
     }
 
-    if (shortState === CAPTURING && e.key.length === 1) {
+    const keyCode = e.code.toLowerCase()
+    const isPrintable = e.key.length === 1
+
+    if (shortState === CAPTURING && isPrintable) {
       e.preventDefault()
       e.stopPropagation()
       events.push(
         Object.assign(new KeyboardEvent('keyup', e), { custom: true })
       )
     }
-    if (shortState === CAPTURING && e.key.toLowerCase() === suffix) {
+    if (shortState === CAPTURING && keyCode === suffix) {
       timeoutID && clearTimeout(timeoutID)
 
       e.preventDefault()
       e.stopPropagation()
 
-      logger('barcode', barcode)
-      callback(barcode)
-
-      reset()
+      completeBarcode()
     }
   }
 
@@ -118,29 +132,31 @@ const barcodeHidReader = (function () {
       return
     }
 
-    if (shortState !== CAPTURING && e.key.length !== 1) {
-      return
-    }
-
     if (e.altKey || e.ctrlKey) {
       return
     }
 
-    if (shortState === CAPTURING && e.key.toLowerCase() === suffix) {
+    const keyCode = e.code.toLowerCase()
+    const isPrintable = e.key.length === 1
+    const isPrefix = prefix !== '' && keyCode === prefix
+
+    if (shortState === CAPTURING && keyCode === suffix) {
       e.preventDefault()
       e.stopPropagation()
       return
     }
 
-    if (prefix !== '' && e.key === prefix) {
+    let prefixFlag = false
+    if (shortState === IDLE && isPrefix) {
+      shortState = CAPTURING
+      prefixFlag = true
+    }
+
+    if (prefix === '' && isPrintable) {
       shortState = CAPTURING
     }
 
-    if (prefix === '' && e.key.length === 1) {
-      shortState = CAPTURING
-    }
-
-    if (shortState === CAPTURING && e.key.length === 1) {
+    if (shortState === CAPTURING && isPrintable) {
       events.push(
         Object.assign(new KeyboardEvent('keydown', e), { custom: true })
       )
@@ -148,11 +164,11 @@ const barcodeHidReader = (function () {
         Object.assign(new KeyboardEvent('keypress', e), { custom: true })
       )
 
-      if (e.key !== prefix) {
-        if (convertToLatin && (latinKeyCodes[e.code] || e.code?.startsWith('Key'))) {
+      if (!prefixFlag || !isPrefix) {
+        if (convertToLatin && latinKeyCodes[e.code]) {
           barcode += e.shiftKey
-            ? latinKeyCodes[e.code]?.[1] ?? e.code.charAt(3)
-            : latinKeyCodes[e.code]?.[0] ?? e.code.charAt(3).toLowerCase()
+            ? latinKeyCodes[e.code]?.[1]
+            : latinKeyCodes[e.code]?.[0]
         } else {
           barcode += e.key
         }
@@ -183,6 +199,7 @@ const barcodeHidReader = (function () {
         defaults,
         options
       ))
+      prefix = prefix.toLowerCase()
       suffix = suffix.toLowerCase()
       reset()
       node = doc

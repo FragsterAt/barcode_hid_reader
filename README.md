@@ -27,8 +27,8 @@ function onBarcode(barcode) {
 // all options are optional, below is default values:
 let options = {
     timeout: 30, // timeout between symbols in ms, increase if scanning is unstable
-    prefix: "", // barcode prefix, KeyboardEvent.key see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
-    suffix: "Enter", // barcode suffix, KeyboardEvent.key see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
+    prefix: "", // barcode prefix, KeyboardEvent.code see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
+    suffix: "Enter", // barcode suffix, KeyboardEvent.code see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
     convertToLatin: true // convert barcode to latin characters
     callback: dispatchEvent, // callback. default is dispatching custom "barcode" event
     log: false // boolean or callback. if true log into console, if function call function with arguments: state, event, event.custom
